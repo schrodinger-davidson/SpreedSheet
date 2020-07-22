@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%=title%></title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+</head>
+<body>
+
+    <div class="main-content">
+        <div class="title">Excel Clone</div>
+        <div class="menu-bar">
+            <div class="dropdown">File<span ></span>
+                <div class="dropdown-content">
+                    <a id="New">New</a>
+                    <a id="Open">Open</a>
+                    <a id="Save">Save</a>
+                    <a id="exit">Exit</a>
+                </div></div>    
+            <div><span>Home</span></div>
+            <div><span>Insert</span></div>
+            <div><span>Page Layout</span></div>
+            <div><span>Formulas</span></div>
+            <div><span>Data</span></div>
+            <div><span>Review</span></div>
+            <div><span>View</span></div>
+            <div><span>Help</span></div>
+    </div>
+    <div class="icon-bar">
+        
+        <div class="icon-bar__font">
+
+            <select  name="font" id="font">
+                <option value="Noto Sans">Noto Sans</option>
+                <option value="Arial">Arial</option>
+                <option value="Calibri">Calibri</option>
+                <option value="Comic Sans MS">Comic Sans MS</option>
+                <option value="Courier New">Courier New</option>
+                <option value="Impact">Impact</option>
+                <option value="Georgia">Georgia</option>
+                <option value="Garamond">Garamond</option>
+                <option value="Lato">Lato</option>
+                <option value="Open Sans">Open Sans</option>
+                <option value="Palatino">Palatino</option>
+                <option value="Verdana">Verdana</option></select>
+
+                <select name="fontSize" id="fontSize">
+                    <option value="14">14</option>
+                    <option value="16">16</option>
+                    <option value="18">18</option>
+                    <option value="20">20</option>
+                    <option value="22">22</option>
+                    <option value="24">24</option>
+                    <option value="26">26</option>
+                    <option value="28">28</option>
+                    <option value="36">36</option>
+                    <option value="48">48</option>
+                    <option value="72">72</option>
+                    </select>
+                <div class="icon-bar__name">Font Size</div> 
+        </div>
+        <div class="icon-bar__font">
+            <div class="items-f">
+                <div></div>
+                <div id="bold" class="b-1"><i class="fa fa-bold fa-1" aria-hidden="true"></i></div>
+                
+                <div id="italic" class="b-2"><i class="fa fa-italic fa-2" aria-hidden="true"></i></div>
+                
+                <div id="underline" class="b-3"><i class="fa fa-underline fa-3" aria-hidden="true"></i></div>
+                
+                </div>
+            <div class="icon-bar__name">Font Style</div>
+        </div>
+        <div class="icon-bar__font">
+            <div id="alignment" class="items-f">
+                <div></div>
+                <div  value="left" class="b1"><button class="halign" id="left" value="left"><i class="fa fa-align-left fa-" aria-hidden="true"></i></button></div>
+                
+                <div  value="center" class="b2"><button class="halign" id="center" value="center"><i class="fa fa-align-center fa-" aria-hidden="true"></i></button></div>
+                
+                <div value="right" class="b3"><button class="halign" id="right" value="right"><i class="fa fa-align-right fa-" aria-hidden="true"></i></button></div>
+                </div>
+            <div class="icon-bar__name">Alignment</div>
+        </div>
+        <div class="icon-bar__font">
+            <div class="items-f">
+                <div></div>
+                <div  class="b-1"> <i class="fa fa-font c" aria-hidden="true"></i><input type="color" class="c" id="color" value="black"></div>
+                <div  class="b-2"> <i class="fa fa-magic c" aria-hidden="true"></i><input type="color" class="c" id="bgcolor" value="black"></div>
+                </div>
+                
+            <div class="icon-bar__name">Styles</div>
+        </div>  
+</div>
+
+<!-- menu-bar-option end======================================================================================= -->
+
+<!-- formula-bar========================================================================================================= -->
+<div class="formula-bar">
+    <div>fx</div>
+    <div>
+       <input type="text" id="address-container">
+       <i class="fa fa-calculator" aria-hidden="true"></i>
+       <input type="text" id="formula-container">
+    </div>
+</div>
+<!-- formula-bar-end======================================================================================================== -->
+
+<!-- cells-or-gird-starts====================================================================================================== -->
+
+<div class="cell-container" id="grid-container">
+    <div id="top-left-cell" class="top-left-cell">  </div>
+    <div class="top-row" id="top-row">
+        <%for(let j=0; j<cols; j++){%>
+         <div class="cell">
+            <%=String.fromCharCode(65+j)%>
+         </div>
+         <%}%>
+    </div>
+    <div class="left-col" id="left-col">
+     <%for(let i=1; i<=rows; i++){%>
+         <div class="cell">
+             <%=i%>
+         </div>
+         <%}%>
+    </div>
+   <div class="grid" id="grid">
+     <%for(let i=0;i<rows;i++){%>
+         <div class="row">
+ 
+             <%for(let j=0;j<cols;j++){%>
+                 <div class="cell" contenteditable="true" ri=<%=i%> ci=<%=j%>>
+                     
+                 </div>
+             <%}%>
+         </div>
+     <%}%>
+</div>
+</div>
+   <!-- cells-or-gird-end====================================================================================================== -->
+
+   <!-- end-of menu-itemss======================================================================================================= -->
+  
+   <!-- sheets-bar -starts====================================================================================================================================================== -->
+   <div class="sheet-bottom">
+
+
+    <div class="sheet-contextmenu" style="width: 160px; display: none;">
+    <div class="sheet-item">Delete</div></div><ul class="sheet-menu">
+        <li class=""><div class="spreadsheet-icon"><div class="sheet-icon-img add">
+            <i id="newPage" class="fa fa-plus newpage" aria-hidden="true"></i>
+        </div>
+    </div>
+        <span class="">
+            <div class="sheet-dropdown top-left">
+                <div class="sheet-dropdown-header">
+                    <div class="sheet-icon">
+                    </div>
+                </div>
+                <div class="sheet-dropdown-content" style="width: auto; display: none;">
+                    <div class="sheet-item" style="width: 150px; font-weight: normal;">sheet2</div>
+                    <div class="sheet-item" style="width: 150px; font-weight: normal;">sheet-test</div>
+                </div></div>
+            </span>
+        </li>
+                <li class="active">sheet</li>
+    </ul>
+    </div>
+
+
+<!-- sheets-bar-end==================================================================================================================== -->
+
+
+
+
+    <script src="index.js"></script>
+</body>
+</html>

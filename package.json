@@ -1,0 +1,28 @@
+{
+  "name": "Excel-clone",
+  "version": "1.0.0",
+  "description": "Built an excel clone with electon.js. Incorporating all basic features like grid, formula,font,color,open,save etc",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "electron ."
+  },
+  "keywords": ["Excel-clone"],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^9.0.5"
+  },
+  "dependencies": {
+    "ejs-electron": "^2.0.3",
+    "jquery": "^3.5.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geekcodershivam/Excel-Clone.git"
+  },
+  "bugs": {
+    "url": "https://github.com/geekcodershivam/Excel-Clone/issues"
+  },
+  "homepage": "https://github.com/geekcodershivam/Excel-Clone#readme"
+}
