@@ -21,7 +21,7 @@ function createWindow () {
   // and load the index.html of the app. renderer process
   win.loadFile('index.ejs').then(function(){
       // Open the DevTools.
-      win.webContents.openDevTools();
+      // win.webContents.openDevTools();
       win.show();
       win.maximize();
   })

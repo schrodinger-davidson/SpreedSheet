@@ -6,9 +6,7 @@ const BrowserWindow = remote.BrowserWindow;
 const {ipcRenderer}=require('electron');
 
 $(document).ready(function () {
-
-
-
+    let cut,copy,paste;
     let db, lastClickedCell;
     $("#grid .cell").on("click", function () {
         let rowId = Number($(this).attr("ri")) + 1;
@@ -68,7 +66,7 @@ $(document).ready(function () {
                     italic: false,
                     underline: false,
                     color: "black",
-                    bgcolor:"black",
+                    bgcolor:"white",
                     halign: "center"
                 };
                 row.push(cell);
@@ -381,6 +379,9 @@ $(document).ready(function () {
             colId
         };
     }
+    function getCellObject(rowId,colId){
+        return db[rowId][colId];
+    }
 
     $(".cell").on("click", function () {
         let cellElemAdd = $("#address-container").val();
@@ -442,8 +443,8 @@ $(document).ready(function () {
                 nodeIntegration: true
             }
         });
-        win.loadFile('index1.ejs').then(function () {
-            win.webContents.openDevTools();
+        win.loadFile('index.ejs').then(function () {
+            // win.webContents.openDevTools();
             win.show();
             win.maximize();
         })
@@ -488,7 +489,209 @@ $(document).ready(function () {
         });
     })
 
+    //cut,copy,paste button
+    $("#copy").on("click",function(){
+        copy=$("#grid .cell.selected").html();
+        cut="";
+    })
+    $("#cut").on("click",function(){
+        cut=$("#grid .cell.selected").html();
+        copy="";
+        let selectedCell=$("#grid .cell.selected");
+        let {rowId,colId}=getRC(selectedCell);
+        let cellObject=getCellObject(rowId,colId)
+        if(cellObject.formula){
+            removeFormula(cellObject,rowId,colId);
+        }
+        $(`#grid .cell[ri=${rowId}][ci=${colId}]`).html("");
+        //change left col height
+        $(selectedCell).keyup();
+    })
+    $("#paste").on("click",function(){
+        paste=cut?cut:copy
+        $("#grid .cell").html=paste;
+        if(!cut&&!copy){
+            return
+        }
+        let selectedCell=$("#grid .cell");
+        let {rowId,colId}=getRC(selectedCell);
+        let cellObject=getCellObject(rowId,colId)
 
+        if(cellObject.formula){
+            removeFormula(cellObject,rowId,colId);
+        }
+        updateCell(cellObject,rowId,colId,paste)
+        paste=""
+        cut=""
+        copy=""
+    })
+
+
+    $("#deleterow").on("click",function(){
+        let rowId= Number($("#grid .cell").attr("ri"));
+        if(Number.isNaN(rowId)){
+         dialog.showErrorBox("Sorry !","Please select a cell")
+         return;
+         }
+         db.splice(rowId,1)
+         let row=[]
+         for(let col=0;col<db[0].length;col++){
+             let cell={
+                value: "",
+                formula: "",
+                children: [],
+                fontSize: 14,
+                fontStyle: "Noto Sans",
+                bold: false,
+                italic: false,
+                underline: false,
+                color: "black",
+                bgcolor:"white",
+                halign: "center"
+                }
+             row.push(cell);
+         }
+         db.push(row);
+         let rows=$("#grid").find(".row")
+         for(let i=rowId;i<rows.length;i++){
+             let cells=$(rows[i]).find(".cell");
+             for(let j=0;j<cells.length;j++){
+                let cell=db[i][j]
+                $(cells[j]).html(db[i][j].value);
+                $(cells[j]).css("font-family",cell.fontStyle);
+                $(cells[j]).css("font-size",cell.fontSize+"px");
+                $(cells[j]).css("font-weight",cell.bold?"bold":"normal");
+                $(cells[j]).css("text-decoration",cell.underline?"underline":"none");
+                $(cells[j]).css("font-style",cell.italic?"italic":"normal");
+                $(cells[j]).css("color",cell.color);
+                $(cells[j]).css("background-color",cell.bgcolor);
+                $(cells[j]).css("text-align",cell.halign);
+             }
+         }
+     })
+     $("#newrow").on("click",function(){
+         let rowId= Number($("#grid .cell").attr("ri"));
+         if(Number.isNaN(rowId)){
+             dialog.showErrorBox("Sorry !","Please select a cell")
+             return;
+         }
+         let row=[]
+         for(let col=0;col<db[0].length;col++){
+             let cell={
+                value: "",
+                formula: "",
+                children: [],
+                fontSize: 14,
+                fontStyle: "Noto Sans",
+                bold: false,
+                italic: false,
+                underline: false,
+                color: "black",
+                bgcolor:"white",
+                halign: "center"
+                 }
+             row.push(cell);
+         }
+         db.splice(rowId,0,row);
+         db.pop();
+          let rows=$("#grid").find(".row")
+         console.log($(rows[db.length-1]).html())
+         for(let i=rowId;i<rows.length;i++){
+             let cells=$(rows[i]).find(".cell");
+             for(let j=0;j<cells.length;j++){
+                let cell=db[i][j]
+                $(cells[j]).html(db[i][j].value);
+                $(cells[j]).css("font-family",cell.fontStyle);
+                $(cells[j]).css("font-size",cell.fontSize+"px");
+                $(cells[j]).css("font-weight",cell.bold?"bold":"normal");
+                $(cells[j]).css("text-decoration",cell.underline?"underline":"none");
+                $(cells[j]).css("font-style",cell.italic?"italic":"normal");
+                $(cells[j]).css("color",cell.color);
+                $(cells[j]).css("background-color",cell.bgcolor);
+                $(cells[j]).css("text-align",cell.halign);
+             }
+         }
+     })
+     $("#deletecol").on("click",function(){
+         let colId= Number($("#grid .cell").attr("ci"));
+         if(Number.isNaN(colId)){
+             dialog.showErrorBox("Sorry !","Please select a cell")
+             return;
+         }
+         for(let row=0;row<db.length;row++){
+             let cell={
+                value: "",
+                formula: "",
+                children: [],
+                fontSize: 14,
+                fontStyle: "Noto Sans",
+                bold: false,
+                italic: false,
+                underline: false,
+                color: "black",
+                bgcolor:"white",
+                halign: "center"
+                 }
+                 db[row].splice(colId,1);
+                 db[row].push(cell);
+         }
+         let rows=$("#grid").find(".row")
+         for(let i=0;i<rows.length;i++){
+             let cells=$(rows[i]).find(".cell");
+             for(let j=colId;j<cells.length;j++){
+                let cell=db[i][j]
+                $(cells[j]).html(db[i][j].value);
+                $(cells[j]).css("font-family",cell.fontStyle);
+                $(cells[j]).css("font-size",cell.fontSize+"px");
+                $(cells[j]).css("font-weight",cell.bold?"bold":"normal");
+                $(cells[j]).css("text-decoration",cell.underline?"underline":"none");
+                $(cells[j]).css("font-style",cell.italic?"italic":"normal");
+                $(cells[j]).css("color",cell.color);
+                $(cells[j]).css("background-color",cell.bgcolor);
+                $(cells[j]).css("text-align",cell.halign);
+             }
+         }
+     })
+     $("#newcol").on("click",function(){
+         let colId= Number($("#grid .cell").attr("ci"));
+         if(Number.isNaN(colId)){
+             dialog.showErrorBox("Sorry !","Please select a cell")
+             return;
+         }
+         for(let row=0;row<db.length;row++){
+             let cell={
+                value: "",
+                formula: "",
+                children: [],
+                fontSize: 14,
+                fontStyle: "Noto Sans",
+                bold: false,
+                italic: false,
+                underline: false,
+                color: "black",
+                bgcolor:"white",
+                halign: "center"
+                 }
+                 db[row].splice(colId,0,cell);
+                 db[row].pop();
+         }
+         let rows=$("#grid").find(".row")
+         for(let i=0;i<rows.length;i++){
+             let cells=$(rows[i]).find(".cell");
+             for(let j=colId;j<cells.length;j++){
+                let cell=db[i][j]
+                $(cells[j]).html(db[i][j].value);
+                $(cells[j]).css("font-family",cell.fontStyle);
+                $(cells[j]).css("font-size",cell.fontSize+"px");
+                $(cells[j]).css("font-weight",cell.bold?"bold":"normal");
+                $(cells[j]).css("text-decoration",cell.underline?"underline":"none");
+                $(cells[j]).css("font-style",cell.italic?"italic":"normal");
+                $(cells[j]).css("color",cell.color);
+                $(cells[j]).css("background-color",cell.bgcolor);
+                $(cells[j]).css("text-align",cell.halign);
+             }
+         }
+     })
     function init() {
         $("#New").trigger("click");
     }
